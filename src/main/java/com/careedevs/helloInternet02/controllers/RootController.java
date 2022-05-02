@@ -1,12 +1,14 @@
 package com.careedevs.helloInternet02.controllers;
 
 
+import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.Scanner;
-
+@SpringBootApplication
 @RestController
+@RequestMapping
 public class RootController {
 
 
@@ -39,21 +41,20 @@ public class RootController {
         return jokes[jokeIndex];
 
     }
+    @GetMapping("/getPostbyId/{id}")
+    public Object getPostById(RestTemplate restTemplate, @PathVariable String id) {
+        return restTemplate.getForObject("https://jsonplaceholder.typicode.com/posts/" + id, Object.class);
 
-
-
-
-    @GetMapping("/getAllComments")
-    private Object allComments(RestTemplate restTemplate)
-    {
-        String allComments = "https://jsonplaceholder.typicode.com/comments";
-        String url = " https://jsonplaceholder.typicode.com" + allComments;
-
-
-       Object response= restTemplate.getForObject("https://jsonplaceholder.typicode.com/comments",  Object.class);
-       return response;
+    }
+    @GetMapping("/posts/{id}/comments")
+    public Object getCommentsByPost(RestTemplate restTemplate, @PathVariable String id) {
+        return restTemplate.getForObject("https://jsonplaceholder.typicode.com/posts" + id + "/comments", Object.class);
     }
 
+    @GetMapping("/comments")
+    public Object getCommentsByQuery(RestTemplate restTemplate, @RequestParam String id) {
+        return restTemplate.getForObject("https://jsonplaceholder.typicode.com/comments?postId=" + id, Object.class);
+    }
 
 
 }
